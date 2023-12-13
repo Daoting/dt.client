@@ -10,6 +10,7 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using System.Text;
 using System.Text.RegularExpressions;
 using Windows.ApplicationModel.DataTransfer;
@@ -163,6 +164,39 @@ namespace Dt.Core
                 return UITree.MainWin.Bounds.Height - UITree.StatusBarHeight;
 #endif
             }
+        }
+        #endregion
+
+        #region 加载xaml
+        const string _xamlPrefix = " xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\" xmlns:a=\"using:Dt.Base\" ";
+
+        /// <summary>
+        /// 加载xaml字符串，返回实例对象，已包含Dt.Base命名空间，前缀a
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="p_xaml"></param>
+        /// <returns></returns>
+        public static T LoadXaml<T>(string p_xaml)
+            where T : class
+        {
+            if (string.IsNullOrEmpty(p_xaml))
+                return default(T);
+
+            try
+            {
+                int index = p_xaml.IndexOf('>');
+                if (index > 0)
+                {
+                    if (p_xaml[index - 1] == '/')
+                        index--;
+                    return XamlReader.Load(p_xaml.Insert(index, _xamlPrefix)) as T;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "xaml内容错误");
+            }
+            return default(T);
         }
         #endregion
 

@@ -47,6 +47,12 @@ namespace Dt.Base
             typeof(CTree),
             new PropertyMetadata(null));
 
+        public readonly static DependencyProperty ValIDProperty = DependencyProperty.Register(
+            "ValID",
+            typeof(string),
+            typeof(CTree),
+            new PropertyMetadata("name"));
+        
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
             "Text",
             typeof(string),
@@ -158,6 +164,16 @@ namespace Dt.Base
         {
             get { return (string)GetValue(TgtIDProperty); }
             set { SetValue(TgtIDProperty, value); }
+        }
+        
+        /// <summary>
+        /// 获取设置当前值对应的数据源列名，默认name
+        /// </summary>
+        [CellParam("对应源列名")]
+        public string ValID
+        {
+            get { return (string)GetValue(ValIDProperty); }
+            set { SetValue(ValIDProperty, value); }
         }
 
         /// <summary>

@@ -181,16 +181,6 @@
         </Setter>
     </Style>
 
-    <!--CList的Row选项模板-->
-    <DataTemplate x:Key="CListRowView">
-        <a:Dot ID="name" Margin="10,0,10,0" />
-    </DataTemplate>
-
-    <!--CList的object选项模板-->
-    <DataTemplate x:Key="CListObjView">
-        <a:Dot Margin="10,0,10,0" />
-    </DataTemplate>
-
     <!--CHtml-->
     <Style TargetType="a:CHtml">
         <Setter Property="Foreground" Value="{StaticResource 默认前景}" />

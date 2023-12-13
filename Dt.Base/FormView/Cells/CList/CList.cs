@@ -30,7 +30,7 @@ namespace Dt.Base
     /// 3. 设置`Ex`属性，该属性是`类名#参数`的字符串，类需要继承自`CListEx`，重写方法可控制下拉对话框和数据源。
     /// 4. 外部(xaml中)定义的对象列表
     /// 5. 格的数据源类型为枚举时，自动生成Enum数据
-    /// 数据源为Table时，确保存在name列；
+    /// 数据源为Table时，通过 ValID 设置对应的数据源列名，默认name，确保列存在
     /// 为普通对象时，直接将对象赋值！
     /// </summary>
     [ContentProperty(Name = nameof(View))]
@@ -67,6 +67,12 @@ namespace Dt.Base
             typeof(CList),
             new PropertyMetadata(false, OnIsEditableChanged));
 
+        public readonly static DependencyProperty ValIDProperty = DependencyProperty.Register(
+            "ValID",
+            typeof(string),
+            typeof(CList),
+            new PropertyMetadata("name"));
+        
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
             "Value",
             typeof(object),
@@ -184,6 +190,16 @@ namespace Dt.Base
             set { SetValue(IsEditableProperty, value); }
         }
 
+        /// <summary>
+        /// 获取设置当前值对应的数据源列名，默认name
+        /// </summary>
+        [CellParam("对应源列名")]
+        public string ValID
+        {
+            get { return (string)GetValue(ValIDProperty); }
+            set { SetValue(ValIDProperty, value); }
+        }
+        
         /// <summary>
         /// 获取设置当前值
         /// </summary>

@@ -67,7 +67,12 @@ namespace Dt.Base.FormView
                 await _owner.OnLoadData();
 
             if (tv.View == null)
-                tv.View = (tv.Data is Table) ? Res.FormRes["CListRowView"] : Res.FormRes["CListObjView"];
+            {
+                string xaml = (tv.Data is Table) ?
+                    $"<DataTemplate><a:Dot ID=\"{_owner.ValID}\" Margin=\"10,0,10,0\" /></DataTemplate>"
+                    : "<DataTemplate><a:Dot Margin=\"10,0,10,0\" /></DataTemplate>";
+                tv.View = Kit.LoadXaml<DataTemplate>(xaml);
+            }
 
             // 不向下层对话框传递Press事件
             AllowRelayPress = false;
@@ -82,7 +87,7 @@ namespace Dt.Base.FormView
         {
             if (e.Data is Row srcRow)
             {
-                _owner.Text = srcRow.Str("name");
+                _owner.Text = srcRow.Str(_owner.ValID);
                 if (_srcIDs != null)
                 {
                     // 同步填充
@@ -157,7 +162,7 @@ namespace Dt.Base.FormView
                 {
                     if (sb.Length > 0)
                         sb.Append("#");
-                    sb.Append(row.Str("name"));
+                    sb.Append(row.Str(_owner.ValID));
                     ls.Add(row);
                 }
             }

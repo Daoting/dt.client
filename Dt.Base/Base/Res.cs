@@ -33,9 +33,7 @@ namespace Dt.Base
         internal static ResourceDictionary WinRes { get; } = new ResourceDictionary { Source = new Uri("ms-appx:///Dt.Base/Themes/Styles/Win.xaml") };
 
         internal static ResourceDictionary DialogRes { get; } = new ResourceDictionary { Source = new Uri("ms-appx:///Dt.Base/Themes/Styles/Dialog.xaml") };
-
-        internal static ResourceDictionary FormRes { get; } = new ResourceDictionary { Source = new Uri("ms-appx:///Dt.Base/Themes/Styles/FormView.xaml") };
-
+        
         internal static ResourceDictionary SketchRes { get; } = new ResourceDictionary { Source = new Uri("ms-appx:///Dt.Base/Themes/Styles/Sketch.xaml") };
         #endregion
 
