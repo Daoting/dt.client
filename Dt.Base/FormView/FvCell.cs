@@ -233,7 +233,7 @@ namespace Dt.Base
         /// <summary>
         /// 单元格值修改后事件，参数为新值
         /// </summary>
-        public event Action<object> Changed;
+        public event Action<FvCell, object> Changed;
 
         /// <summary>
         /// 编辑器的按键事件
@@ -737,7 +737,7 @@ namespace Dt.Base
             if (Changed != null)
             {
                 object obj = GetVal();
-                Changed.Invoke(obj);
+                Changed.Invoke(this, obj);
             }
         }
         #endregion

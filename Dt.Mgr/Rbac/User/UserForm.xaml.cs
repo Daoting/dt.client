@@ -59,7 +59,7 @@ namespace Dt.Mgr.Rbac
         #endregion
 
         #region 内部
-        void OnPhotoChanged(object e)
+        void OnPhotoChanged(FvCell arg1, object e)
         {
             Save();
         }
