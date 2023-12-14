@@ -74,9 +74,9 @@ namespace Dt.Core
             // iOS 在 debug release 状态都不再崩溃
             // android 在 uno4.5 后只联调状态正常，单独运行仍然启动就崩溃
             // 仍然采用老的解决方法：必须最早创建Frame，不能注掉！！！
-            // 升级.net8.0后android已不再崩溃，不再崩溃，UNO_DISABLE_KNOWN_MISSING_TYPES会造成编译错误 
+            // 升级.net8.0后android已不再崩溃，不再崩溃，UNO_DISABLE_KNOWN_MISSING_TYPES会造成编译错误，已无用！
 #if ANDROID
-            new Frame().Navigate(typeof(Page));
+            //new Frame().Navigate(typeof(Page));
 #endif
 
             // 背景画刷，默认主蓝

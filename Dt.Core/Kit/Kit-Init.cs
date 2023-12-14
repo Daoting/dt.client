@@ -50,16 +50,6 @@ namespace Dt.Core
             //if (!Directory.Exists(DataPath))
             //    Directory.CreateDirectory(DataPath);
 
-            // SQLite3
-            // 默认引用顺序：Microsoft.Data.Sqlite -> SQLitePCLRaw.bundle_e_sqlite3 -> SQLitePCLRaw.provider.e_sqlite3
-            // 内部默认初始化调用 SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
-            // 所以最终引用的库名为 e_sqlite3
-            // iOS上即可绑定到系统 sqlite(早期)，也可绑定到 e_sqlite3(现在)
-            // 但wasm中引用包Uno.sqlite-wasm中的库名为 sqlite3，需要另外引用包 SQLitePCLRaw.provider.sqlite3，并且设置provider
-            // 否则默认privider为 SQLite3Provider_e_sqlite3，因找不到e_sqlite3出错！
-#if WASM
-            SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
-#endif
             // GBK编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             IsInited = true;
