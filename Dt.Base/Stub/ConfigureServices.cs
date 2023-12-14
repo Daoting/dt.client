@@ -24,7 +24,6 @@ namespace Dt.Base
         protected override void ConfigureServices(IServiceCollection p_svcs)
         {
             p_svcs.AddSingleton<ILogSetting, LogSetting>();
-            p_svcs.AddSingleton<INotify, DefaultNotify>();
         }
     }
 }

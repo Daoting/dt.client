@@ -26,10 +26,10 @@ namespace Dt.Core
                 throw new Exception("Stub 为单例对象！若重启请使用 Reboot 方法");
             Inst = this;
 
-            var svc = new ServiceCollection();
-            ConfigureServices(svc);
-            SvcProvider = svc.BuildServiceProvider();
-
+            Services = new ServiceCollection();
+            ConfigureServices(Services);
+            SvcProvider = Services.BuildServiceProvider();
+            
             // 后台任务启动时可能为null
             var app = Application.Current;
             if (app != null)
@@ -66,8 +66,10 @@ namespace Dt.Core
         /// <summary>
         /// 依赖注入的全局服务对象提供者
         /// </summary>
-        internal readonly IServiceProvider SvcProvider;
+        internal IServiceProvider SvcProvider;
 
+        internal ServiceCollection Services;
+        
         /// <summary>
         /// 获取某本地库的结构信息
         /// </summary>

@@ -350,3 +350,4 @@ MigrationBackup/
 
 # add
 Dt.Core/Internal/Temp/
+Dt.Base/Base/Temp/
