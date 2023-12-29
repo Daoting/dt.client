@@ -43,16 +43,16 @@ namespace Dt.Base
                 try
                 {
                     // 带参数启动
-                    _autoStartOnce = JsonSerializer.Deserialize<AutoStartInfo>(p_launchArgs);
+                    DefUICallback._autoStartOnce = JsonSerializer.Deserialize<AutoStartInfo>(p_launchArgs);
                 }
                 catch { }
             }
 
             // app已启动过
-            if (Kit.IsInited)
+            if (_isInited)
             {
                 // 带参数启动
-                if (_autoStartOnce != null)
+                if (DefUICallback._autoStartOnce != null)
                     ShowAutoStartOnce();
                 Kit.MainWin.Activate();
 
@@ -62,8 +62,9 @@ namespace Dt.Base
 
             try
             {
-                // 系统初始化
-                await Kit.Init();
+                // 启动前的准备
+                await Kit.OnLaunch();
+                _isInited = true;
                 
                 // 附加全局按键事件
                 InitInput();
@@ -122,7 +123,7 @@ namespace Dt.Base
         {
             if (p_info != null)
             {
-                var svc = SvcProvider.GetService<IReceiveShare>();
+                var svc = Kit.GetService<IReceiveShare>();
                 if (svc != null)
                     svc.OnReceive(p_info);
             }
@@ -130,7 +131,7 @@ namespace Dt.Base
 
         void ShowAutoStartOnce()
         {
-            Win win = AutoStartKit.CreateAutoStartWin(_autoStartOnce);
+            Win win = AutoStartKit.CreateAutoStartWin(DefUICallback._autoStartOnce);
             if (win != null)
             {
                 if (Kit.IsPhoneUI)
@@ -138,7 +139,7 @@ namespace Dt.Base
                 else
                     Desktop.Inst.ShowNewWin(win);
             }
-            _autoStartOnce = null;
+            DefUICallback._autoStartOnce = null;
         }
 
         /// <summary>
@@ -225,5 +226,7 @@ namespace Dt.Base
             await InitConfig();
             await OnStartup();
         }
+
+        bool _isInited;
     }
 }

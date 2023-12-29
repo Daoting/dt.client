@@ -60,12 +60,13 @@ namespace Dt.Core
         {
 #if WIN
             // WinUI中Window.Current为null
-            MainWin = new Window { Title = Stub.Inst.Title };
+            MainWin = new Window { Title = Kit.Title };
             CustomWin();
             MainWin.Activate();
 #else
             // uno中若新创建，Window.Bounds始终为(0, 0)！
             MainWin = Window.Current;
+            MainWin.Title = Kit.Title;
 #endif
 
             // iOS android 启动就崩溃的现象已提uno讨论：https://github.com/unoplatform/uno/discussions/8933
@@ -75,9 +76,9 @@ namespace Dt.Core
             // android 在 uno4.5 后只联调状态正常，单独运行仍然启动就崩溃
             // 仍然采用老的解决方法：必须最早创建Frame，不能注掉！！！
             // 升级.net8.0后android已不再崩溃，不再崩溃，UNO_DISABLE_KNOWN_MISSING_TYPES会造成编译错误，已无用！
-#if ANDROID
-            //new Frame().Navigate(typeof(Page));
-#endif
+            //#if ANDROID
+            //          new Frame().Navigate(typeof(Page));
+            //#endif
 
             // 背景画刷，默认主蓝
             var theme = Kit.GetService<ITheme>();
@@ -124,26 +125,17 @@ namespace Dt.Core
             //    StatusBarHeight = (int)(res.GetDimensionPixelSize(resourceId) / res.DisplayMetrics.Density);
 #endif
 
-            // ios android 不支持UI自适应
+            // 桌面版系统支持Phone模式和Win模式自适应，ios android 不支持，只Phone模式
+            // 因无法区分gtk和wasm所在的OS，都当作桌面版处理，跑在手机端的wasm也可自适应
 #if WIN
-            // 支持UI自适应
             MainWin.SizeChanged += OnWindowSizeChanged;
             Kit.IsPhoneUI = MainWin.Bounds.Width < _maxPhoneUIWidth;
 #elif WASM
-            if (Kit.HostOS == HostOS.Windows
-                || Kit.HostOS == HostOS.Mac
-                || Kit.HostOS == HostOS.Linux)
-            {
-                // 支持UI自适应
-                MainWin.SizeChanged += OnWindowSizeChanged;
-                // wasm上Window有内容且激活后Bounds才有效，其它平台一直有效！
-                Kit.IsPhoneUI = MainWin.Bounds.Width < _maxPhoneUIWidth;
-            }
-            else
-            {
-                // ios android 不支持UI自适应
-                Kit.IsPhoneUI = true;
-            }
+            // gtk 和 wasm 上Window.Bounds初始为(0,0)
+            // wasm 上 MainWin.SizeChanged 事件初次不触发，触发顺序：OnRootSizeChanged OnWindowSizeChanged
+            // gtk 上 MainWin.SizeChanged 事件初次触发两次，第一次(1,1)，触发顺序：OnWindowSizeChanged OnRootSizeChanged
+            // 故只附加 RootGrid.SizeChanged
+            RootGrid.SizeChanged += OnRootSizeChanged;
 #endif
 
             ApplyNotifyStyle();
@@ -367,17 +359,12 @@ namespace Dt.Core
         #endregion
 
         #region UI自适应
-#if WIN || WASM
-        /// <summary>
-        /// 系统区域大小变化时UI自适应
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        // 系统区域大小变化时UI自适应
+#if WIN
         static void OnWindowSizeChanged(object sender, Microsoft.UI.Xaml.WindowSizeChangedEventArgs e)
         {
-#if WIN
             SaveWinState();
-#endif
+
             bool isPhoneUI = e.Size.Width < _maxPhoneUIWidth;
             if (isPhoneUI == Kit.IsPhoneUI)
                 return;
@@ -392,11 +379,28 @@ namespace Dt.Core
 
             // 调整对话框层
             _dlgCanvas.Children.Clear();
-            Stub.Inst.OnUIModeChanged();
+            Kit.OnUIModeChanged();
 
-#if WIN
             MainWin.ExtendsContentIntoTitleBar = !isPhoneUI;
-#endif
+        }
+#elif WASM
+        static void OnRootSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            bool isPhoneUI = e.NewSize.Width < _maxPhoneUIWidth;
+            if (isPhoneUI == Kit.IsPhoneUI)
+                return;
+
+            Kit.IsPhoneUI = isPhoneUI;
+            ApplyNotifyStyle();
+
+            // 登录之前无UI自适应！有向导对话框时造成关闭
+            var tp = RootContent.GetType().Name;
+            if (tp != "Frame" && tp != "Desktop")
+                return;
+
+            // 调整对话框层
+            _dlgCanvas.Children.Clear();
+            Kit.OnUIModeChanged();
         }
 #endif
         #endregion

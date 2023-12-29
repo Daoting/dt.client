@@ -8,7 +8,7 @@
         <IsWin>false</IsWin>
         <IsAndroid>false</IsAndroid>
         <IsIOS>false</IsIOS>
-        <IsWasm>false</IsWasm>
+        <IsNet>false</IsNet>
     </PropertyGroup>
 
     <!-- 目标框架 -->
@@ -28,7 +28,7 @@
                 <TargetFrameworks>net8.0-ios</TargetFrameworks>
             </PropertyGroup>
         </When>
-        <When Condition="$(SolutionFileName.Contains('-wasm'))">
+        <When Condition="$(SolutionFileName.Contains('-wasm')) or $(SolutionFileName.Contains('-gtk'))">
             <PropertyGroup>
                 <TargetFrameworks>net8.0</TargetFrameworks>
             </PropertyGroup>
@@ -39,7 +39,8 @@
             </PropertyGroup>
         </Otherwise>
     </Choose>
-    
+
+    <!-- 平台常量 -->
     <Choose>
         <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
             <PropertyGroup>
@@ -78,12 +79,13 @@
                 <ProjectCapability Include="MauiCore" />
             </ItemGroup>
         </When>
-        <When Condition="!$(TargetFramework.Contains('-'))">
+        <Otherwise>
             <PropertyGroup>
-                <IsWasm>true</IsWasm>
-                <DefineConstants>$(DefineConstants);WASM;ENABLECURSOR</DefineConstants>
+                <!-- gtk wasm -->
+                <IsNet>true</IsNet>
+                <DefineConstants>$(DefineConstants);WASM;NET;ENABLECURSOR</DefineConstants>
             </PropertyGroup>
-        </When>
+        </Otherwise>
     </Choose>
 
     <Choose>

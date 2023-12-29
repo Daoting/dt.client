@@ -21,11 +21,6 @@ namespace Dt.Core
     {
         #region 提示信息
         /// <summary>
-        /// 属性，不缓存对象
-        /// </summary>
-        static INotify _notify => Stub.Inst.SvcProvider.GetRequiredService<INotify>();
-
-        /// <summary>
         /// 发布消息提示
         /// </summary>
         /// <param name="p_content">显示内容</param>
@@ -37,7 +32,7 @@ namespace Dt.Core
         /// </param>
         public static NotifyInfo Msg(string p_content, int p_delaySeconds = 3)
         {
-            return _notify.Msg(p_content, p_delaySeconds);
+            return _ui.Msg(p_content, p_delaySeconds);
         }
 
         /// <summary>
@@ -52,7 +47,7 @@ namespace Dt.Core
         /// </param>
         public static NotifyInfo Warn(string p_content, int p_delaySeconds = 5)
         {
-            return _notify.Warn(p_content, p_delaySeconds);
+            return _ui.Warn(p_content, p_delaySeconds);
         }
 
         /// <summary>
@@ -61,7 +56,7 @@ namespace Dt.Core
         /// <param name="p_notify">消息提示实例</param>
         public static void Notify(NotifyInfo p_notify)
         {
-            _notify.Notify(p_notify);
+            _ui.Notify(p_notify);
         }
 
         /// <summary>
@@ -70,13 +65,13 @@ namespace Dt.Core
         /// <param name="p_notify"></param>
         public static void CloseNotify(NotifyInfo p_notify)
         {
-            _notify.CloseNotify(p_notify);
+            _ui.CloseNotify(p_notify);
         }
 
         /// <summary>
         /// 获取提示信息列表
         /// </summary>
-        public static IList<NotifyInfo> NotifyList => _notify.NotifyList;
+        public static IList<NotifyInfo> NotifyList => _ui.NotifyList;
         #endregion
 
         #region 窗口对话框
@@ -88,7 +83,7 @@ namespace Dt.Core
         /// <returns>true表确认</returns>
         public static Task<bool> Confirm(string p_content, string p_title = null)
         {
-            return Stub.Inst.Confirm(p_content, string.IsNullOrEmpty(p_title) ? "请确认" : p_title);
+            return _ui.Confirm(p_content, string.IsNullOrEmpty(p_title) ? "请确认" : p_title);
         }
 
         /// <summary>
@@ -98,7 +93,7 @@ namespace Dt.Core
         /// <param name="p_title">标题</param>
         public static void Error(string p_content, string p_title = null)
         {
-            Stub.Inst.Error(p_content, string.IsNullOrEmpty(p_title) ? "出错提示" : p_title);
+            _ui.Error(p_content, string.IsNullOrEmpty(p_title) ? "出错提示" : p_title);
         }
 
         /// <summary>
@@ -115,7 +110,7 @@ namespace Dt.Core
             Icons p_icon = Icons.None,
             object p_params = null)
         {
-            return Stub.Inst.OpenWin(p_type, p_title, p_icon, p_params);
+            return _ui.OpenWin(p_type, p_title, p_icon, p_params);
         }
 
         /// <summary>
@@ -146,7 +141,7 @@ namespace Dt.Core
         /// <summary>
         /// 系统标题
         /// </summary>
-        public static string Title => Stub.Inst.Title;
+        public static string Title { get; set; }
 
         /// <summary>
         /// 加载根内容，支持任意类型的UIElement，特殊类型有：
@@ -157,7 +152,7 @@ namespace Dt.Core
         /// <param name="p_elementType">类型：Win Page 或 任意可视元素UIElement</param>
         public static void ShowRoot(Type p_elementType)
         {
-            Stub.Inst.ShowRoot(p_elementType);
+            _ui.ShowRoot(p_elementType);
         }
 
         /// <summary>
@@ -169,7 +164,7 @@ namespace Dt.Core
         /// <param name="p_viewAlias">视图别名</param>
         public static void ShowRoot(string p_viewAlias)
         {
-            Stub.Inst.ShowRoot(GetViewTypeByAlias(p_viewAlias));
+            _ui.ShowRoot(GetViewTypeByAlias(p_viewAlias));
         }
 
         /// <summary>
@@ -181,13 +176,18 @@ namespace Dt.Core
         /// <param name="p_viewEnumAlias">视图别名</param>
         public static void ShowRoot(Enum p_viewEnumAlias)
         {
-            Stub.Inst.ShowRoot(GetViewTypeByAlias(p_viewEnumAlias));
+            _ui.ShowRoot(GetViewTypeByAlias(p_viewEnumAlias));
         }
 
         /// <summary>
         /// 显示系统日志窗口
         /// </summary>
-        public static Action ShowLogBox => Stub.Inst.ShowLogBox;
+        public static Action ShowLogBox => _ui.ShowLogBox;
+
+        /// <summary>
+        /// UI模式切换的回调方法，Phone UI 与 PC UI 切换
+        /// </summary>
+        internal static Action OnUIModeChanged => _ui.OnUIModeChanged;
         #endregion
 
         #region 选择文件
@@ -197,7 +197,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<FileData> PickImage()
         {
-            return Stub.Inst.PickImage();
+            return _ui.PickImage();
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<List<FileData>> PickImages()
         {
-            return Stub.Inst.PickImages();
+            return _ui.PickImages();
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<FileData> PickVideo()
         {
-            return Stub.Inst.PickVideo();
+            return _ui.PickVideo();
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<List<FileData>> PickVideos()
         {
-            return Stub.Inst.PickVideos();
+            return _ui.PickVideos();
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<FileData> PickAudio()
         {
-            return Stub.Inst.PickAudio();
+            return _ui.PickAudio();
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<List<FileData>> PickAudios()
         {
-            return Stub.Inst.PickAudios();
+            return _ui.PickAudios();
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<FileData> PickMedia()
         {
-            return Stub.Inst.PickMedia();
+            return _ui.PickMedia();
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<List<FileData>> PickMedias()
         {
-            return Stub.Inst.PickMedias();
+            return _ui.PickMedias();
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<FileData> PickFile(string[] p_fileTypes = null)
         {
-            return Stub.Inst.PickFile(p_fileTypes);
+            return _ui.PickFile(p_fileTypes);
         }
 
         /// <summary>
@@ -288,7 +288,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<List<FileData>> PickFiles(string[] p_fileTypes = null)
         {
-            return Stub.Inst.PickFiles(p_fileTypes);
+            return _ui.PickFiles(p_fileTypes);
         }
         #endregion
 
@@ -300,7 +300,7 @@ namespace Dt.Core
         /// <returns>照片文件信息，失败或放弃时返回null</returns>
         public static Task<FileData> TakePhoto(CapturePhotoOptions p_options = null)
         {
-            return Stub.Inst.TakePhoto(p_options);
+            return _ui.TakePhoto(p_options);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace Dt.Core
         /// <returns>视频文件信息，失败或放弃时返回null</returns>
         public static Task<FileData> TakeVideo(CaptureVideoOptions p_options = null)
         {
-            return Stub.Inst.TakeVideo(p_options);
+            return _ui.TakeVideo(p_options);
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace Dt.Core
         /// <returns>录音文件信息，失败或放弃时返回null</returns>
         public static Task<FileData> TakeAudio(FrameworkElement p_target)
         {
-            return Stub.Inst.TakeAudio(p_target);
+            return _ui.TakeAudio(p_target);
         }
         #endregion
 
@@ -332,7 +332,7 @@ namespace Dt.Core
         /// <param name="p_img"></param>
         public static Task LoadImage(string p_path, Image p_img = null)
         {
-            return Stub.Inst.LoadImage(p_path, p_img);
+            return _ui.LoadImage(p_path, p_img);
         }
         #endregion
     }

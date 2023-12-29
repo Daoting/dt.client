@@ -2,25 +2,23 @@
 /******************************************************************************
 * 创建: Daoting
 * 摘要: 
-* 日志: 2020-07-21 创建
+* 日志: 2023-12-20 创建
 ******************************************************************************/
 #endregion
 
 #region 引用命名
 using Dt.Base.Tools;
-using Dt.Core;
-using System;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation.Collections;
 #endregion
 
 namespace Dt.Base
 {
     /// <summary>
-    /// 默认系统回调
+    /// 提示信息相关
     /// </summary>
-    public partial class DefaultStub : Stub
+    partial class DefUICallback : IUICallback
     {
         /// <summary>
         /// 显示确认对话框
@@ -28,7 +26,7 @@ namespace Dt.Base
         /// <param name="p_content">消息内容</param>
         /// <param name="p_title">标题</param>
         /// <returns>true表确认</returns>
-        internal override Task<bool> Confirm(string p_content, string p_title)
+        public Task<bool> Confirm(string p_content, string p_title)
         {
             var dispatcher = UITree.MainWin.DispatcherQueue;
             if (dispatcher.HasThreadAccess)
@@ -85,7 +83,7 @@ namespace Dt.Base
         /// </summary>
         /// <param name="p_content">消息内容</param>
         /// <param name="p_title">标题</param>
-        internal override void Error(string p_content, string p_title)
+        public void Error(string p_content, string p_title)
         {
             Kit.RunAsync(() =>
             {
@@ -122,7 +120,7 @@ namespace Dt.Base
         /// <param name="p_icon">图标</param>
         /// <param name="p_params">初始参数</param>
         /// <returns>返回打开的窗口或视图，null表示打开失败</returns>
-        internal override object OpenWin(Type p_type, string p_title, Icons p_icon, object p_params)
+        public object OpenWin(Type p_type, string p_title, Icons p_icon, object p_params)
         {
             Throw.IfNull(p_type, "待显示的窗口类型不可为空！");
 
@@ -194,46 +192,15 @@ namespace Dt.Base
         /// <summary>
         /// 显示系统日志窗口
         /// </summary>
-        internal override void ShowLogBox()
+        public void ShowLogBox()
         {
             SysTrace.ShowLogBox();
         }
 
         /// <summary>
-        /// 挂起时的处理，必须耗时小！
-        /// 手机或PC平板模式下不占据屏幕时触发，此时不确定被终止还是可恢复
-        /// </summary>
-        /// <returns></returns>
-        internal override Task OnSuspending()
-        {
-            // ios在转入后台有180s的处理时间，过后停止所有操作，http连接瞬间自动断开
-            // android各版本不同
-            return Task.CompletedTask;
-
-            // 取消正在进行的上传
-            //Uploader.Cancel();
-
-            // asp.net core2.2时因客户端直接关闭app时会造成服务器端http2连接关闭，该连接下的所有Register推送都结束！！！只能从服务端Abort来停止在线推送
-            // 升级道.net 5.0后不再出现该现象！无需再通过服务端Abort
-            //if (Kit.IsLogon && PushHandler.RetryState == PushRetryState.Enable)
-            //{
-            //    PushHandler.RetryState = PushRetryState.Stop;
-            //    await AtMsg.Unregister();
-            //}
-        }
-
-        /// <summary>
-        /// 恢复会话时的处理，手机或PC平板模式下再次占据屏幕时触发
-        /// </summary>
-        internal override void OnResuming()
-        {
-
-        }
-
-        /// <summary>
         /// WinUI模式 和 PhoneUI模式切换
         /// </summary>
-        internal override void OnUIModeChanged()
+        public void OnUIModeChanged()
         {
             // WinUI中已移除 SystemNavigationManager
             //#if WIN

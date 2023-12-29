@@ -18,10 +18,10 @@ namespace Dt.Base
     /// <summary>
     /// 根内容
     /// </summary>
-    public partial class DefaultStub : Stub
+    partial class DefUICallback : IUICallback
     {
         // 自启动信息，加载主页前设置有效
-        AutoStartInfo _autoStartOnce;
+        internal static AutoStartInfo _autoStartOnce;
         Type _rootElementType;
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Dt.Base
         /// <para>其余可视元素直接加载</para>
         /// </summary>
         /// <param name="p_elementType">类型：Win Page 或 任意可视元素UIElement</param>
-        internal sealed override void ShowRoot(Type p_elementType)
+        public void ShowRoot(Type p_elementType)
         {
             if (p_elementType == null)
                 throw new ArgumentNullException(nameof(p_elementType));

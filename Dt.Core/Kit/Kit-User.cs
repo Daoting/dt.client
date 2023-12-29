@@ -7,6 +7,7 @@
 #endregion
 
 #region 引用命名
+using Microsoft.Extensions.DependencyInjection;
 #endregion
 
 namespace Dt.Core
@@ -64,7 +65,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<bool> LoginByCookie(bool p_showWarning = false)
         {
-            return Stub.Inst.LoginByCookie(p_showWarning);
+            return _user?.LoginByCookie(p_showWarning);
         }
         #endregion
 
@@ -76,7 +77,7 @@ namespace Dt.Core
         /// <returns>true 表示有权限</returns>
         public static Task<bool> HasPermission(long p_perID)
         {
-            return Stub.Inst.HasPermission(p_perID);
+            return _user?.HasPermission(p_perID);
         }
         #endregion
 
@@ -89,7 +90,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<T> GetParamByID<T>(long p_paramID)
         {
-            return Stub.Inst.GetParamByID<T>(p_paramID);
+            return _user?.GetParamByID<T>(p_paramID);
         }
 
         /// <summary>
@@ -100,7 +101,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<T> GetParamByName<T>(string p_paramName)
         {
-            return Stub.Inst.GetParamByName<T>(p_paramName);
+            return _user?.GetParamByName<T>(p_paramName);
         }
 
         /// <summary>
@@ -111,7 +112,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static Task<bool> SaveParams(string p_paramID, string p_value)
         {
-            return Stub.Inst.SaveParams(p_paramID, p_value);
+            return _user?.SaveParams(p_paramID, p_value);
         }
         #endregion
     }

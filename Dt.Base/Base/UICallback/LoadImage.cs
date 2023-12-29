@@ -17,7 +17,7 @@ namespace Dt.Base
     /// <summary>
     /// 加载图片
     /// </summary>
-    public partial class DefaultStub : Stub
+    partial class DefUICallback : IUICallback
     {
 #if WASM
         /// <summary>
@@ -25,7 +25,7 @@ namespace Dt.Base
         /// </summary>
         /// <param name="p_path">路径或FileList中json格式</param>
         /// <param name="p_img"></param>
-        internal override Task LoadImage(string p_path, Image p_img)
+        public Task LoadImage(string p_path, Image p_img)
         {
             if (string.IsNullOrEmpty(p_path))
                 return Task.CompletedTask;
@@ -52,7 +52,7 @@ namespace Dt.Base
         /// </summary>
         /// <param name="p_path">路径或FileList中json格式</param>
         /// <param name="p_img"></param>
-        internal override async Task LoadImage(string p_path, Image p_img = null)
+        public async Task LoadImage(string p_path, Image p_img = null)
         {
             // 加载过程：
             // 1. 本地.doc目录是否存在

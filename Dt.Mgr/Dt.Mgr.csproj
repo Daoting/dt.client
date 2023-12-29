@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<Version>4.3.2</Version>
+		<Version>4.3.3</Version>
         <PackageId Condition="'$(Configuration)'=='Debug'">Dt.Client.Debug</PackageId>
         <PackageId Condition="'$(Configuration)'=='Release'">Dt.Client</PackageId>
 		<Description>搬运工客户端基础包</Description>
@@ -9,13 +9,43 @@
 
     <Import Project="..\Package.props" />
 
-	<!-- 包图标 -->
+	<!-- 手动加入包 -->
 	<ItemGroup>
 		<None Include="..\..\logo.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
             <Visible>false</Visible>
 		</None>
+        <None Include="..\Dt.Base\Fonts\**">
+            <Pack>True</Pack>
+            <PackagePath>\lib\net8.0\Dt.Base\Fonts</PackagePath>
+            <Visible>false</Visible>
+        </None>
+        <None Include="..\..\flag.uprimarker">
+            <Pack>True</Pack>
+            <PackagePath>\lib\net8.0\Dt.Base.uprimarker</PackagePath>
+            <Visible>false</Visible>
+        </None>
+        <None Include="..\Dt.Base\Fonts\**">
+            <Pack>True</Pack>
+            <PackagePath>\lib\net8.0-android34.0\Dt.Base\Fonts</PackagePath>
+            <Visible>false</Visible>
+        </None>
+        <None Include="..\..\flag.uprimarker">
+            <Pack>True</Pack>
+            <PackagePath>\lib\net8.0-android34.0\Dt.Base.uprimarker</PackagePath>
+            <Visible>false</Visible>
+        </None>
+        <None Include="..\Dt.Base\Fonts\**">
+            <Pack>True</Pack>
+            <PackagePath>\lib\net8.0-ios17.0\Dt.Base\Fonts</PackagePath>
+            <Visible>false</Visible>
+        </None>
+        <None Include="..\..\flag.uprimarker">
+            <Pack>True</Pack>
+            <PackagePath>\lib\net8.0-ios17.0\Dt.Base.uprimarker</PackagePath>
+            <Visible>false</Visible>
+        </None>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -27,7 +57,8 @@
         <Using Include="Dt.Base" />
     </ItemGroup>
     
-    <ItemGroup Condition="$(TargetFramework.Contains('-'))">
+    <!-- 停止wasm的WebRtc -->
+    <ItemGroup>
         <None Include="Chat\WebRTC\VideoCaller.xaml" />
         <Page Remove="Chat\WebRTC\VideoCaller.xaml" />
 

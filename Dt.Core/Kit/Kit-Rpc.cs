@@ -8,6 +8,7 @@
 
 #region 引用命名
 using Dt.Core.Rpc;
+using Microsoft.Extensions.DependencyInjection;
 #endregion
 
 namespace Dt.Core
@@ -90,7 +91,7 @@ namespace Dt.Core
         /// <summary>
         /// 是否使用服务
         /// </summary>
-        public static bool IsUsingSvc => GetService<IRpcConfig>() != null;
+        public static bool IsUsingSvc => _rpcConfig != null;
 
         /// <summary>
         /// 获取服务地址
@@ -100,7 +101,7 @@ namespace Dt.Core
         /// <exception cref="Exception"></exception>
         public static string GetSvcUrl(string p_svcName)
         {
-            return GetRequiredService<IRpcConfig>().GetSvcUrl(p_svcName);
+            return _rpcConfig?.GetSvcUrl(p_svcName);
         }
 
         /// <summary>

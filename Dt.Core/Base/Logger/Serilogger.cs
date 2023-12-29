@@ -18,7 +18,7 @@ namespace Dt.Core
     {
         public static void Init()
         {
-            var setting = Stub.Inst.SvcProvider.GetRequiredService<ILogSetting>();
+            var setting = Kit.GetRequiredService<ILogSetting>();
             try
             {
                 var cfg = new LoggerConfiguration();

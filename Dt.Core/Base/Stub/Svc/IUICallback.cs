@@ -2,14 +2,11 @@
 /******************************************************************************
 * 创建: Daoting
 * 摘要: 
-* 日志: 2020-07-21 创建
+* 日志: 2023-12-20 创建
 ******************************************************************************/
 #endregion
 
 #region 引用命名
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 #endregion
@@ -17,10 +14,54 @@ using Microsoft.UI.Xaml.Controls;
 namespace Dt.Core
 {
     /// <summary>
-    /// 系统回调接口存根
+    /// 提示信息相关
     /// </summary>
-    public abstract partial class Stub
+    public interface IUICallback
     {
+        #region 提示信息
+        /// <summary>
+        /// 获取提示信息列表
+        /// </summary>
+        ItemList<NotifyInfo> NotifyList { get; }
+
+        /// <summary>
+        /// 发布消息提示
+        /// </summary>
+        /// <param name="p_content">显示内容</param>
+        /// <param name="p_delaySeconds">
+        /// 几秒后自动关闭，默认3秒
+        /// <para>大于0：启动定时器自动关闭，点击也关闭</para>
+        /// <para>0：不自动关闭，但点击关闭</para>
+        /// <para>小于0：始终不关闭，只有程序控制关闭</para>
+        /// </param>
+        NotifyInfo Msg(string p_content, int p_delaySeconds);
+
+        /// <summary>
+        /// 警告提示
+        /// </summary>
+        /// <param name="p_content">显示内容</param>
+        /// <param name="p_delaySeconds">
+        /// 几秒后自动关闭，默认5秒
+        /// <para>大于0：启动定时器自动关闭，点击也关闭</para>
+        /// <para>0：不自动关闭，但点击关闭</para>
+        /// <para>小于0：始终不关闭，只有程序控制关闭</para>
+        /// </param>
+        NotifyInfo Warn(string p_content, int p_delaySeconds);
+
+        /// <summary>
+        /// 发布消息提示
+        /// </summary>
+        /// <param name="p_notify">消息提示实例</param>
+        void Notify(NotifyInfo p_notify);
+
+        /// <summary>
+        /// 关闭消息提示，通常在连接按钮中执行关闭
+        /// </summary>
+        /// <param name="p_notify"></param>
+        void CloseNotify(NotifyInfo p_notify);
+        #endregion
+
+        #region 窗口对话框
         /// <summary>
         /// 加载根内容，支持任意类型的UIElement，特殊类型有：
         /// <para>Win：PhoneUI模式加载Frame、导航到窗口主页、再导航到自启动窗口主页；Win模式加载桌面、打开窗口、再打开自启动窗口</para>
@@ -28,7 +69,7 @@ namespace Dt.Core
         /// <para>其余可视元素直接加载</para>
         /// </summary>
         /// <param name="p_elementType">类型：Win Page 或 任意可视元素UIElement</param>
-        internal abstract void ShowRoot(Type p_elementType);
+        void ShowRoot(Type p_elementType);
 
         /// <summary>
         /// 显示确认对话框
@@ -36,14 +77,14 @@ namespace Dt.Core
         /// <param name="p_content">消息内容</param>
         /// <param name="p_title">标题</param>
         /// <returns>true表确认</returns>
-        internal abstract Task<bool> Confirm(string p_content, string p_title);
+        Task<bool> Confirm(string p_content, string p_title);
 
         /// <summary>
         /// 显示错误对话框
         /// </summary>
         /// <param name="p_content">消息内容</param>
         /// <param name="p_title">标题</param>
-        internal abstract void Error(string p_content, string p_title);
+        void Error(string p_content, string p_title);
 
         /// <summary>
         /// 根据窗口/视图类型和参数激活旧窗口、打开新窗口 或 自定义启动(IView)
@@ -53,77 +94,67 @@ namespace Dt.Core
         /// <param name="p_icon">图标</param>
         /// <param name="p_params">初始参数</param>
         /// <returns>返回打开的窗口或视图，null表示打开失败</returns>
-        internal abstract object OpenWin(Type p_type, string p_title, Icons p_icon, object p_params);
+        object OpenWin(Type p_type, string p_title, Icons p_icon, object p_params);
 
         /// <summary>
         /// 显示系统日志窗口
         /// </summary>
-        internal abstract void ShowLogBox();
-
-        /// <summary>
-        /// 挂起时的处理，必须耗时小！
-        /// 手机或PC平板模式下不占据屏幕时触发，此时不确定被终止还是可恢复
-        /// </summary>
-        /// <returns></returns>
-        internal abstract Task OnSuspending();
-
-        /// <summary>
-        /// 恢复会话时的处理，手机或PC平板模式下再次占据屏幕时触发
-        /// </summary>
-        internal abstract void OnResuming();
+        void ShowLogBox();
 
         /// <summary>
         /// UI模式切换的回调方法，Phone UI 与 PC UI 切换
         /// </summary>
-        internal abstract void OnUIModeChanged();
+        void OnUIModeChanged();
+        #endregion
 
+        #region 选择文件
         /// <summary>
         /// 选择单个图片
         /// </summary>
         /// <returns></returns>
-        internal abstract Task<FileData> PickImage();
+        Task<FileData> PickImage();
 
         /// <summary>
         /// 选择多个图片
         /// </summary>
         /// <returns></returns>
-        internal abstract Task<List<FileData>> PickImages();
+        Task<List<FileData>> PickImages();
 
         /// <summary>
         /// 选择单个视频
         /// </summary>
         /// <returns></returns>
-        internal abstract Task<FileData> PickVideo();
+        Task<FileData> PickVideo();
 
         /// <summary>
         /// 选择多个视频
         /// </summary>
         /// <returns></returns>
-        internal abstract Task<List<FileData>> PickVideos();
+        Task<List<FileData>> PickVideos();
 
         /// <summary>
         /// 选择单个音频文件
         /// </summary>
         /// <returns></returns>
-        internal abstract Task<FileData> PickAudio();
+        Task<FileData> PickAudio();
 
         /// <summary>
         /// 选择多个音频文件
         /// </summary>
         /// <returns></returns>
-        internal abstract Task<List<FileData>> PickAudios();
+        Task<List<FileData>> PickAudios();
 
         /// <summary>
         /// 选择单个媒体文件
         /// </summary>
         /// <returns></returns>
-        internal abstract Task<FileData> PickMedia();
+        Task<FileData> PickMedia();
 
         /// <summary>
         /// 选择多个媒体文件
         /// </summary>
         /// <returns></returns>
-        internal abstract Task<List<FileData>> PickMedias();
+        Task<List<FileData>> PickMedias();
 
         /// <summary>
         /// 选择单个文件
@@ -134,7 +165,7 @@ namespace Dt.Core
         /// ios文件过滤类型，如 UTType.Image，null时不过滤
         /// </param>
         /// <returns></returns>
-        internal abstract Task<FileData> PickFile(string[] p_fileTypes);
+        Task<FileData> PickFile(string[] p_fileTypes);
 
         /// <summary>
         /// 选择多个文件
@@ -145,89 +176,37 @@ namespace Dt.Core
         /// ios文件过滤类型，如 UTType.Image，null时不过滤
         /// </param>
         /// <returns></returns>
-        internal abstract Task<List<FileData>> PickFiles(string[] p_fileTypes);
+        Task<List<FileData>> PickFiles(string[] p_fileTypes);
+        #endregion
 
+        #region 拍照录像录音
         /// <summary>
         /// 拍照
         /// </summary>
         /// <param name="p_options">选项</param>
         /// <returns>照片文件信息，失败或放弃时返回null</returns>
-        internal abstract Task<FileData> TakePhoto(CapturePhotoOptions p_options);
+        Task<FileData> TakePhoto(CapturePhotoOptions p_options);
 
         /// <summary>
         /// 录像
         /// </summary>
         /// <param name="p_options">选项</param>
         /// <returns>视频文件信息，失败或放弃时返回null</returns>
-        internal abstract Task<FileData> TakeVideo(CaptureVideoOptions p_options);
+        Task<FileData> TakeVideo(CaptureVideoOptions p_options);
 
         /// <summary>
         /// 开始录音
         /// </summary>
         /// <param name="p_target">计时对话框居中的目标</param>
         /// <returns>录音文件信息，失败或放弃时返回null</returns>
-        internal abstract Task<FileData> TakeAudio(FrameworkElement p_target);
+        Task<FileData> TakeAudio(FrameworkElement p_target);
 
         /// <summary>
         /// 加载文件服务的图片，优先加载缓存，支持路径 或 FileList中json格式
         /// </summary>
         /// <param name="p_path">路径或FileList中json格式</param>
         /// <param name="p_img"></param>
-        internal abstract Task LoadImage(string p_path, Image p_img);
-
-        #region 用户相关回调，默认不支持，Dt.Mgr支持
-        /// <summary>
-        /// cookie自动登录
-        /// </summary>
-        /// <param name="p_showWarning">是否显示警告信息</param>
-        /// <returns></returns>
-        internal protected virtual Task<bool> LoginByCookie(bool p_showWarning)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// 判断当前登录用户是否具有指定权限
-        /// </summary>
-        /// <param name="p_perID">权限ID</param>
-        /// <returns>true 表示有权限</returns>
-        internal protected virtual Task<bool> HasPermission(long p_perID)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// 根据参数id获取用户参数值
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="p_paramID"></param>
-        /// <returns></returns>
-        internal protected virtual Task<T> GetParamByID<T>(long p_paramID)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// 根据参数名称获取用户参数值
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="p_paramName"></param>
-        /// <returns></returns>
-        internal protected virtual Task<T> GetParamByName<T>(string p_paramName)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// 保存用户参数值
-        /// </summary>
-        /// <param name="p_paramID"></param>
-        /// <param name="p_value"></param>
-        /// <returns></returns>
-        internal protected virtual Task<bool> SaveParams(string p_paramID, string p_value)
-        {
-            throw new NotSupportedException();
-        }
+        Task LoadImage(string p_path, Image p_img);
         #endregion
     }
 }

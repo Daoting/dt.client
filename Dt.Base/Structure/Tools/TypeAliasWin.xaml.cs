@@ -18,8 +18,8 @@ namespace Dt.Base.Tools
         public TypeAliasWin()
         {
             InitializeComponent();
-            _lvAttr.Data = LoadGroup(Stub.Inst._aliasTypes.Keys);
-            _lvGroup.Data = LoadGroup(Stub.Inst._aliasTypeList.Keys);
+            _lvAttr.Data = LoadGroup(Kit.AllAliasTypes.Keys);
+            _lvGroup.Data = LoadGroup(Kit.AllAliasTypeList.Keys);
         }
 
         Table LoadGroup(IEnumerable<string> p_keys)
@@ -55,7 +55,7 @@ namespace Dt.Base.Tools
             var pre = e.Row.Str(0).Replace("Attribute", "-");
 
             var tbl = new Table { { "alias" }, { "types" } };
-            foreach (var item in Stub.Inst._aliasTypes)
+            foreach (var item in Kit.AllAliasTypes)
             {
                 if (!item.Key.StartsWith(pre))
                     continue;
@@ -73,7 +73,7 @@ namespace Dt.Base.Tools
             var pre = e.Row.Str(0).Replace("Attribute", "-");
 
             var tbl = new Table { { "alias" }, { "types" } };
-            foreach (var item in Stub.Inst._aliasTypeList)
+            foreach (var item in Kit.AllAliasTypeList)
             {
                 if (!item.Key.StartsWith(pre))
                     continue;

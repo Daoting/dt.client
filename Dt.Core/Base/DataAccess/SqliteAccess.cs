@@ -215,8 +215,7 @@ namespace Dt.Core
                 db.Open();
 
                 // 后台任务独立启动时为null
-                if (Stub.Inst != null
-                    && Stub.Inst.GetSqliteDbInfo(_dbName) is SqliteTblsInfo dbInfo
+                if (Kit.GetSqliteDbInfo(_dbName) is SqliteTblsInfo dbInfo
                     && dbInfo != null)
                 {
                     // 初次运行、库表结构版本变化或文件被删除时创建库表结构

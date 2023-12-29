@@ -9,6 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Include="Fonts\**" />
         <EmbeddedResource Include="Controls\Policy\Privacy.txt" />
         <EmbeddedResource Include="Controls\Policy\Agreement.txt" />
     </ItemGroup>

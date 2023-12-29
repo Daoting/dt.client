@@ -7,6 +7,7 @@
 #endregion
 
 #region 引用命名
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using System.Text;
 using Windows.ApplicationModel;
@@ -16,28 +17,47 @@ using Windows.Storage;
 namespace Dt.Core
 {
     /// <summary>
-    /// 系统初始化
+    /// 初始化
     /// </summary>
     public partial class Kit
     {
         /// <summary>
-        /// 系统初始化：日志、全局事件、本地目录、状态库
+        /// Kit初始化：提取注入的服务、日志、全局事件
         /// </summary>
-        internal static async Task Init()
+        /// <param name="p_svcProvider">注入服务</param>
+        internal static void Init(IServiceProvider p_svcProvider)
         {
+            _svcProvider = p_svcProvider;
+            _typeAlias = _svcProvider.GetRequiredService<ITypeAlias>();
+            _ui = _svcProvider.GetRequiredService<IUICallback>();
+            _rpcConfig = _svcProvider.GetService<IRpcConfig>();
+            _user = _svcProvider.GetService<IUserCallback>();
+
+            // 从后台任务启动
+            if (Application.Current == null)
+                return;
+            
             // 初始化日志
             Serilogger.Init();
 
 #if !WIN
             // WinUI已移除事件，其他平台咋？
-            var app = Application.Current;
-            app.Suspending += OnSuspending;
-            app.Resuming += OnResuming;
+            //var app = Application.Current;
+            //app.Suspending += OnSuspending;
+            //app.Resuming += OnResuming;
 #endif
 
             // 异常处理，参见 https://github.com/Daoting/dt/issues/1
             AttachUnhandledException();
+            Debug("Kit.Init");
+        }
 
+        /// <summary>
+        /// 启动前的准备
+        /// </summary>
+        /// <returns></returns>
+        internal static async Task OnLaunch()
+        {
             // 创建本地文件存放目录
             // 使用 StorageFolder 替换 Directory 是因为 wasm 中可以等待 IDBFS 初始化完毕！！！
             // 否则用 Directory 每次都创建新目录！
@@ -52,15 +72,17 @@ namespace Dt.Core
 
             // GBK编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            IsInited = true;
-            Debug("Kit.Init完毕");
         }
-
+        
         /// <summary>
-        /// app已初始化
+        /// 依赖注入的全局服务对象提供者
         /// </summary>
-        internal static bool IsInited { get; private set; }
-
+        static IServiceProvider _svcProvider;
+        static IRpcConfig _rpcConfig;
+        static ITypeAlias _typeAlias;
+        static IUICallback _ui;
+        static IUserCallback _user;
+        
         #region App事件方法
         /// <summary>
         /// 三平台都能正常触发！必须耗时小！
@@ -74,7 +96,9 @@ namespace Dt.Core
             var deferral = e.SuspendingOperation.GetDeferral();
             try
             {
-                await Stub.Inst.OnSuspending();
+                var svc = GetService<IAppEvent>();
+                if (svc != null)
+                    await svc.OnSuspending();
             }
             catch { }
             deferral.Complete();
@@ -91,7 +115,9 @@ namespace Dt.Core
         {
             try
             {
-                Stub.Inst.OnResuming();
+                var svc = GetService<IAppEvent>();
+                if (svc != null)
+                    svc.OnResuming();
             }
             catch { }
         }

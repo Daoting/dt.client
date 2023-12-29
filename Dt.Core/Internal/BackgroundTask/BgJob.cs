@@ -32,7 +32,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static async Task Run()
         {
-            WriteLog("进入Run");
+            WriteLog("后台任务...");
 
             // 前端在运行或后台资源未释放，Stub实例存在
             Stub stub = Stub.Inst;
@@ -54,7 +54,7 @@ namespace Dt.Core
                 return;
             }
 
-            var bgJob = stub.SvcProvider.GetService<IBackgroundJob>();
+            var bgJob = Kit.GetService<IBackgroundJob>();
             if (bgJob != null)
             {
                 string msg = "启动";

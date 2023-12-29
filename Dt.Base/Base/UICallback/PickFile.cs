@@ -18,14 +18,14 @@ namespace Dt.Base
     /// <summary>
     /// 跨平台工具集：选择图片、视频、音频文件，拍照、录像、录音
     /// </summary>
-    public partial class DefaultStub : Stub
+    partial class DefUICallback : IUICallback
     {
         #region 选择文件
         /// <summary>
         /// 选择单个图片
         /// </summary>
         /// <returns></returns>
-        internal override Task<FileData> PickImage()
+        public Task<FileData> PickImage()
         {
             return new FilePicker().PickImage();
         }
@@ -34,7 +34,7 @@ namespace Dt.Base
         /// 选择多个图片
         /// </summary>
         /// <returns></returns>
-        internal override Task<List<FileData>> PickImages()
+        public Task<List<FileData>> PickImages()
         {
             return new FilePicker().PickImages();
         }
@@ -43,7 +43,7 @@ namespace Dt.Base
         /// 选择单个视频
         /// </summary>
         /// <returns></returns>
-        internal override Task<FileData> PickVideo()
+        public Task<FileData> PickVideo()
         {
             return new FilePicker().PickVideo();
         }
@@ -52,7 +52,7 @@ namespace Dt.Base
         /// 选择多个视频
         /// </summary>
         /// <returns></returns>
-        internal override Task<List<FileData>> PickVideos()
+        public Task<List<FileData>> PickVideos()
         {
             return new FilePicker().PickVideos();
         }
@@ -61,7 +61,7 @@ namespace Dt.Base
         /// 选择单个音频文件
         /// </summary>
         /// <returns></returns>
-        internal override Task<FileData> PickAudio()
+        public Task<FileData> PickAudio()
         {
             return new FilePicker().PickAudio();
         }
@@ -70,7 +70,7 @@ namespace Dt.Base
         /// 选择多个音频文件
         /// </summary>
         /// <returns></returns>
-        internal override Task<List<FileData>> PickAudios()
+        public Task<List<FileData>> PickAudios()
         {
             return new FilePicker().PickAudios();
         }
@@ -79,7 +79,7 @@ namespace Dt.Base
         /// 选择单个媒体文件
         /// </summary>
         /// <returns></returns>
-        internal override Task<FileData> PickMedia()
+        public Task<FileData> PickMedia()
         {
             return new FilePicker().PickMedia();
         }
@@ -88,7 +88,7 @@ namespace Dt.Base
         /// 选择多个媒体文件
         /// </summary>
         /// <returns></returns>
-        internal override Task<List<FileData>> PickMedias()
+        public Task<List<FileData>> PickMedias()
         {
             return new FilePicker().PickMedias();
         }
@@ -102,7 +102,7 @@ namespace Dt.Base
         /// ios文件过滤类型，如 UTType.Image，null时不过滤
         /// </param>
         /// <returns></returns>
-        internal override Task<FileData> PickFile(string[] p_fileTypes = null)
+        public Task<FileData> PickFile(string[] p_fileTypes = null)
         {
             return new FilePicker().PickFile(p_fileTypes);
         }
@@ -116,7 +116,7 @@ namespace Dt.Base
         /// ios文件过滤类型，如 UTType.Image，null时不过滤
         /// </param>
         /// <returns></returns>
-        internal override Task<List<FileData>> PickFiles(string[] p_fileTypes = null)
+        public Task<List<FileData>> PickFiles(string[] p_fileTypes = null)
         {
             return new FilePicker().PickFiles(p_fileTypes);
         }
@@ -130,7 +130,7 @@ namespace Dt.Base
         /// </summary>
         /// <param name="p_options">选项</param>
         /// <returns>照片文件信息，失败或放弃时返回null</returns>
-        internal override Task<FileData> TakePhoto(CapturePhotoOptions p_options = null)
+        public Task<FileData> TakePhoto(CapturePhotoOptions p_options = null)
         {
             return new CameraCapture().TakePhoto(p_options);
         }
@@ -140,7 +140,7 @@ namespace Dt.Base
         /// </summary>
         /// <param name="p_options">选项</param>
         /// <returns>视频文件信息，失败或放弃时返回null</returns>
-        internal override Task<FileData> TakeVideo(CaptureVideoOptions p_options = null)
+        public Task<FileData> TakeVideo(CaptureVideoOptions p_options = null)
         {
             return new CameraCapture().TakeVideo(p_options);
         }
@@ -152,7 +152,7 @@ namespace Dt.Base
         /// </summary>
         /// <param name="p_target">计时对话框居中的目标</param>
         /// <returns>录音文件信息，失败或放弃时返回null</returns>
-        internal override async Task<FileData> TakeAudio(FrameworkElement p_target)
+        public async Task<FileData> TakeAudio(FrameworkElement p_target)
         {
 
             if (_audioRecorder == null)

@@ -8,7 +8,7 @@
 #endregion
 
 #region 引用命名
-using Microsoft.Extensions.Logging;
+
 #endregion
 
 namespace Dt.Base
@@ -21,9 +21,10 @@ namespace Dt.Base
             // 原来在Global.xaml中定义，Frame内部使用NativeFramePresenter承载
             Uno.UI.FeatureConfiguration.Style.ConfigureNativeFrameNavigation();
 
-            InitializeLogging();
+            //InitializeLogging();
         }
 
+        /*
         /// <summary>
         /// Configures global Uno Platform logging
         /// </summary>
@@ -92,6 +93,7 @@ namespace Dt.Base
 #endif
 #endif
         }
+        */
     }
 }
 #endif

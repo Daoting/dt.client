@@ -70,11 +70,11 @@ namespace Dt.Mgr.Chat
             if (_menu == null)
             {
                 _menu = new Menu { IsContextMenu = true };
-                Mi mi = new Mi { ID = "视频通话", Icon = Icons.视频 };
-                mi.Click += OnWebRtc;
-                _menu.Items.Add(mi);
+                //Mi mi = new Mi { ID = "视频通话", Icon = Icons.视频 };
+                //mi.Click += OnWebRtc;
+                //_menu.Items.Add(mi);
 
-                mi = new Mi { ID = "文件", Icon = Icons.文件 };
+                Mi mi = new Mi { ID = "文件", Icon = Icons.文件 };
                 mi.Click += OnAddFile;
                 _menu.Items.Add(mi);
                 if (!Kit.IsPhoneUI)
@@ -137,13 +137,13 @@ namespace Dt.Mgr.Chat
         }
 
 #if WASM
-        async void OnWebRtc(Mi e)
-        {
-            if (VideoCaller.Inst == null)
-            {
-                await new VideoCaller().ShowDlg(Owner);
-            }
-        }
+        //async void OnWebRtc(Mi e)
+        //{
+        //    if (VideoCaller.Inst == null)
+        //    {
+        //        await new VideoCaller().ShowDlg(Owner);
+        //    }
+        //}
 #endif
         #endregion
 

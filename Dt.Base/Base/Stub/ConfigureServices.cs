@@ -7,10 +7,6 @@
 #endregion
 
 #region 引用命名
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Input;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.Extensions.DependencyInjection;
 #endregion
 
@@ -23,7 +19,7 @@ namespace Dt.Base
     {
         protected override void ConfigureServices(IServiceCollection p_svcs)
         {
-            p_svcs.AddSingleton<ILogSetting, LogSetting>();
+            p_svcs.AddSingleton<IUICallback, DefUICallback>();
         }
     }
 }

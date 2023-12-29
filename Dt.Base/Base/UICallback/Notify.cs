@@ -2,7 +2,7 @@
 /******************************************************************************
 * 创建: Daoting
 * 摘要: 
-* 日志: 2016-02-18
+* 日志: 2023-12-20 创建
 ******************************************************************************/
 #endregion
 
@@ -16,17 +16,12 @@ namespace Dt.Base
     /// <summary>
     /// 提示信息相关
     /// </summary>
-    class DefaultNotify : INotify
+    partial class DefUICallback : IUICallback
     {
-        public DefaultNotify()
-        {
-            NotifyList.ItemsChanged += OnNotifyItemsChanged;
-        }
-
         /// <summary>
         /// 获取提示信息列表
         /// </summary>
-        public ItemList<NotifyInfo> NotifyList { get; } = new ItemList<NotifyInfo>();
+        public ItemList<NotifyInfo> NotifyList => _notifyList;
 
         /// <summary>
         /// 发布消息提示
@@ -47,7 +42,7 @@ namespace Dt.Base
             notify.Message = p_content;
             notify.NotifyType = NotifyType.Information;
             notify.Delay = p_delaySeconds;
-            Kit.RunAsync(() => NotifyList.Add(notify));
+            Kit.RunAsync(() => _notifyList.Add(notify));
             return notify;
         }
 
@@ -70,7 +65,7 @@ namespace Dt.Base
             notify.Message = p_content;
             notify.NotifyType = NotifyType.Warning;
             notify.Delay = p_delaySeconds;
-            Kit.RunAsync(() => NotifyList.Add(notify));
+            Kit.RunAsync(() => _notifyList.Add(notify));
             return notify;
         }
 
@@ -81,7 +76,7 @@ namespace Dt.Base
         public void Notify(NotifyInfo p_notify)
         {
             if (p_notify != null && !string.IsNullOrEmpty(p_notify.Message))
-                Kit.RunAsync(() => NotifyList.Add(p_notify));
+                Kit.RunAsync(() => _notifyList.Add(p_notify));
         }
 
         /// <summary>
@@ -91,10 +86,10 @@ namespace Dt.Base
         public void CloseNotify(NotifyInfo p_notify)
         {
             if (p_notify != null)
-                Kit.RunAsync(() => NotifyList.Remove(p_notify));
+                Kit.RunAsync(() => _notifyList.Remove(p_notify));
         }
 
-        void OnNotifyItemsChanged(object sender, ItemListChangedArgs e)
+        internal static void OnNotifyItemsChanged(object sender, ItemListChangedArgs e)
         {
             if (e.CollectionChange == CollectionChange.ItemInserted || e.CollectionChange == CollectionChange.ItemChanged)
             {
@@ -110,5 +105,7 @@ namespace Dt.Base
                 UITree.NotifyPanel.Children.Clear();
             }
         }
+        
+        internal static readonly ItemList<NotifyInfo> _notifyList = new ItemList<NotifyInfo>();
     }
 }

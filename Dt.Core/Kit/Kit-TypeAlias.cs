@@ -7,6 +7,7 @@
 #endregion
 
 #region 引用命名
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 #endregion
 
@@ -25,7 +26,7 @@ namespace Dt.Core
         /// <returns>返回共享类型的实例对象</returns>
         public static T GetShareObj<T>(string p_alias)
         {
-            var tp = Stub.Inst.GetTypeByAlias(typeof(ShareAttribute), p_alias);
+            var tp = _typeAlias.GetTypeByAlias(typeof(ShareAttribute), p_alias);
             if (tp == null)
                 Throw.Msg($"别名为{p_alias}的共享类型不存在！");
             return (T)Activator.CreateInstance(tp);
@@ -49,7 +50,7 @@ namespace Dt.Core
         /// <returns>返回类型</returns>
         public static Type GetShareType(string p_alias)
         {
-            return Stub.Inst.GetTypeByAlias(typeof(ShareAttribute), p_alias);
+            return _typeAlias.GetTypeByAlias(typeof(ShareAttribute), p_alias);
         }
 
         /// <summary>
@@ -59,7 +60,7 @@ namespace Dt.Core
         /// <returns>返回类型</returns>
         public static Type GetShareType(Enum p_enumAlias)
         {
-            return Stub.Inst.GetTypeByAlias(typeof(ShareAttribute), p_enumAlias.ToString());
+            return _typeAlias.GetTypeByAlias(typeof(ShareAttribute), p_enumAlias.ToString());
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace Dt.Core
         /// <returns>返回类型</returns>
         public static Type GetTypeByAlias(Type p_attrType, string p_alias)
         {
-            return Stub.Inst.GetTypeByAlias(p_attrType, p_alias);
+            return _typeAlias.GetTypeByAlias(p_attrType, p_alias);
         }
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace Dt.Core
         /// <returns>返回类型</returns>
         public static Type GetViewTypeByAlias(string p_alias)
         {
-            return Stub.Inst.GetTypeByAlias(typeof(ViewAttribute), p_alias);
+            return _typeAlias.GetTypeByAlias(typeof(ViewAttribute), p_alias);
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace Dt.Core
         /// <returns>返回类型</returns>
         public static Type GetViewTypeByAlias(Enum p_enumAlias)
         {
-            return Stub.Inst.GetTypeByAlias(typeof(ViewAttribute), p_enumAlias.ToString());
+            return _typeAlias.GetTypeByAlias(typeof(ViewAttribute), p_enumAlias.ToString());
         }
 
         /// <summary>
@@ -103,7 +104,7 @@ namespace Dt.Core
         /// <returns></returns>
         public static MethodInfo GetMethodByAlias(Type p_attrType, string p_alias, string p_methodName, BindingFlags p_flags)
         {
-            var tp = Stub.Inst.GetTypeByAlias(p_attrType, p_alias);
+            var tp = _typeAlias.GetTypeByAlias(p_attrType, p_alias);
             return tp.GetMethod(p_methodName, p_flags);
         }
 
@@ -115,7 +116,7 @@ namespace Dt.Core
         /// <returns>返回类型</returns>
         public static List<Type> GetAllTypesByAlias(Type p_attrType, string p_alias)
         {
-            return Stub.Inst.GetTypeListByAlias(p_attrType, p_alias);
+            return _typeAlias.GetTypeListByAlias(p_attrType, p_alias);
         }
 
         /// <summary>
@@ -127,7 +128,7 @@ namespace Dt.Core
             if (p_event == null)
                 return;
 
-            var ls = Stub.Inst.GetTypeListByAlias(typeof(EventHandlerAttribute), p_event.GetType().Name);
+            var ls = _typeAlias.GetTypeListByAlias(typeof(EventHandlerAttribute), p_event.GetType().Name);
             if (ls.Count > 0)
             {
                 foreach (var tp in ls)
@@ -148,6 +149,26 @@ namespace Dt.Core
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 所有类型别名
+        /// </summary>
+        public static IReadOnlyDictionary<string, Type> AllAliasTypes => _typeAlias.AllAliasTypes;
+
+        /// <summary>
+        /// 所有类型别名的类型列表
+        /// </summary>
+        public static IReadOnlyDictionary<string, List<Type>> AllAliasTypeList => _typeAlias.AllAliasTypeList;
+        
+        /// <summary>
+        /// 获取某本地库的结构信息
+        /// </summary>
+        /// <param name="p_dbName">库名</param>
+        /// <returns></returns>
+        public static SqliteTblsInfo GetSqliteDbInfo(string p_dbName)
+        {
+            return _typeAlias?.GetSqliteDbInfo(p_dbName);
         }
     }
 }

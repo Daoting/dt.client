@@ -8,13 +8,11 @@
 #endregion
 
 #region 引用命名
-using Microsoft.Extensions.DependencyInjection;
-using System;
+using Microsoft.UI.Dispatching;
+using Microsoft.Windows.AppNotifications;
+using Microsoft.Windows.AppNotifications.Builder;
 using System.Diagnostics;
-using System.Linq;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.UI.Notifications;
 #endregion
@@ -95,7 +93,7 @@ namespace Dt.Core
 
         public static void Toast(string p_title, string p_content, AutoStartInfo p_startInfo)
         {
-            if (string.IsNullOrEmpty(p_title) || string.IsNullOrEmpty(p_content))
+            if (string.IsNullOrEmpty(p_title) && string.IsNullOrEmpty(p_content))
                 return;
 
             Windows.Data.Xml.Dom.XmlDocument xml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
@@ -104,9 +102,25 @@ namespace Dt.Core
                 string json = JsonSerializer.Serialize(p_startInfo, JsonOptions.UnsafeSerializer);
                 ((Windows.Data.Xml.Dom.XmlElement)xml.FirstChild).SetAttribute("launch", json);
             }
-            xml.GetElementsByTagName("text").Item(0).InnerText = p_title;
-            xml.GetElementsByTagName("text").Item(1).InnerText = p_content;
+            
+            xml.GetElementsByTagName("text").Item(0).InnerText = !string.IsNullOrEmpty(p_title) ? p_title : p_content;
+            if (!string.IsNullOrEmpty(p_title) && !string.IsNullOrEmpty(p_content))
+                xml.GetElementsByTagName("text").Item(1).InnerText = p_content;
             ToastNotificationManager.CreateToastNotifier().Show(new ToastNotification(xml));
+
+            // 以下无法在后台任务发出Toast通知！！！
+            //var builder = new AppNotificationBuilder();
+            //if (!string.IsNullOrEmpty(p_title))
+            //    builder.AddText(p_title);
+            //if (!string.IsNullOrEmpty(p_content))
+            //    builder.AddText(p_content);
+
+            //if (p_startInfo != null)
+            //{
+            //    string json = JsonSerializer.Serialize(p_startInfo, JsonOptions.UnsafeSerializer);
+            //    builder.AddArgument("launch", json);
+            //}
+            //AppNotificationManager.Default.Show(builder.BuildNotification());
         }
     }
 }
